@@ -15,7 +15,7 @@ impl Component for Index {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        let (mut width, mut height) = (16, 9);
+        let (mut width, mut height, mut scale) = (16, 9, 40);
 
         if let Some(window) = window() {
             let window_width = window
@@ -29,15 +29,15 @@ impl Component for Index {
                 .as_f64()
                 .unwrap_or(0f64);
 
-            (width, height) = if window_width > window_height {
-                (16, 9)
+            (width, height, scale) = if window_width > window_height {
+                (16, 9, 40)
             } else {
-                (9, 16)
+                (9, 20, 30)
             }
         }
 
         let perlin_base64 =
-            perlin::Noise::generate(width * 40, height * 40, 30f32, 4u32, 0.5f32, 2f32);
+            perlin::Noise::generate(width * scale, height * scale, 30f32, 4u32, 0.5f32, 2f32);
 
         html! {
             <main>

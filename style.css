@@ -11,7 +11,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
     background-position: center;
     background-size: 140%;
     background-repeat: no-repeat;
@@ -28,14 +28,20 @@ body {
 
 @media (max-width: 700px) {
     .front-section {
-        background-size: 75vh;
+        background-size: 70dvh;
     }
 
     .welcome-message {
-        font-size: 4rem;
+        font-size: 2.5rem;
     }
 }
 
 @media (min-width: 701px) and (max-width: 1120px) {
-    
+    .front-section {
+        background-size: 70dvh;
+    }
+
+    .welcome-message {
+        font-size: 2.5rem;
+    }
 }
