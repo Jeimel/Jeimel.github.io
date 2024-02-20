@@ -6,3 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+yew = { git = "https://github.com/yewstack/yew/", features = ["csr"] }
+web-sys = "0.3.68"
+image = "0.24.8"
+base64 = "0.21.7"
+rand = "0.8.5"
