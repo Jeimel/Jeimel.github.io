@@ -37,12 +37,27 @@ impl Component for Index {
         }
 
         let perlin_base64 =
-            perlin::Noise::generate(width * scale, height * scale, 30f32, 4u32, 0.5f32, 2f32);
+            perlin::Noise::generate(width * scale, height * scale, 40f32, 4u32, 0.5f32, 2f32);
 
         html! {
             <main>
-                <section class={classes!("front-section")} style={format!("background-image: url(data:image/jpeg;base64,{})", perlin_base64)}>
-                    <h1 class="welcome-message">{"hi, i'm felix."}</h1>
+                <section id="front" class={classes!("front-section")} style={format!("background-image: url(data:image/jpeg;base64,{})", perlin_base64)}>
+                    <h1 class={classes!("header-message")}>{"hi, i'm felix."}</h1>
+                    <div class={classes!("front-container")}>
+                        <span class={classes!("front-button")}>
+                            <a href="https://github.com/jeimel">
+                                {"github"}
+                            </a>
+                        </span>
+                        <span class={classes!("front-button")}>
+                            <a href="#projects">
+                                {"projects"}
+                            </a>
+                        </span>
+                    </div>
+                </section>
+                <section id="projects" class={classes!("projects-section")}>
+                <h1 class={classes!("header-message")}>{"projects"}</h1>
                 </section>
             </main>
         }

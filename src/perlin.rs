@@ -71,14 +71,14 @@ impl Noise {
 
     fn terrain_color(noise: f32) -> Rgb<u8> {
         match noise {
-            _ if noise < 0.3 => Rgb([52, 14, 156]),
-            _ if noise < 0.4 => Rgb([82, 40, 199]),
-            _ if noise < 0.45 => Rgb([196, 172, 63]),
-            _ if noise < 0.52 => Rgb([49, 215, 4]),
-            _ if noise < 0.6 => Rgb([42, 133, 21]),
-            _ if noise < 0.7 => Rgb([69, 44, 44]),
-            _ if noise < 0.8 => Rgb([45, 31, 31]),
-            _ if noise < 1.0 => Rgb([154, 168, 153]),
+            _ if noise < 0.28 => Rgb([52, 14, 156]),  // Water1
+            _ if noise < 0.42 => Rgb([82, 40, 199]),  // Water2
+            _ if noise < 0.5 => Rgb([196, 172, 63]),  // Beach
+            _ if noise < 0.6 => Rgb([49, 215, 4]),    // Grass1
+            _ if noise < 0.72 => Rgb([42, 133, 21]),  // Grass2
+            _ if noise < 0.8 => Rgb([69, 44, 44]),    // Mountain1
+            _ if noise < 0.9 => Rgb([45, 31, 31]),    // Mountain2
+            _ if noise < 1.0 => Rgb([154, 168, 153]), // snow
             _ => Rgb([0, 0, 0]),
         }
     }

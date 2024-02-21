@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     font-family: "JetBrains Mono", monospace;
@@ -18,12 +22,41 @@ body {
     background-color: rgb(52, 14, 156);
 }
 
-.welcome-message {
+.front-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.front-button {
+    margin: 1rem 2rem;
+    text-wrap: nowrap;
+    cursor: pointer;
+
+    a {
+        font-size: 3rem;
+        color: white;
+        text-decoration: none; 
+    }
+
+    h3 {
+        font-size: 3rem;
+    }
+}
+
+
+.header-message {
     margin: 10px 0;
     text-wrap: nowrap;
     font-size: 6rem;
     color: white;
-    text-shadow: 0px 0px 30px rgb(255, 255, 255, 0.2);
+}
+
+.projects-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100dvh;
+    background-color: rgb(52, 14, 156);
 }
 
 @media (max-width: 700px) {
@@ -31,8 +64,16 @@ body {
         background-size: 70dvh;
     }
 
-    .welcome-message {
+    .header-message {
         font-size: 2.5rem;
+    }
+
+    .front-button {
+        margin: 0.5rem 1rem;
+
+        a {
+            font-size: 1.5rem;
+        }
     }
 }
 
@@ -41,7 +82,15 @@ body {
         background-size: 70dvh;
     }
 
-    .welcome-message {
+    .header-message {
         font-size: 2.5rem;
+    }
+
+    .front-button {
+        margin: 0.5rem 1rem;
+
+        a {
+            font-size: 1.5rem;
+        }
     }
 }
