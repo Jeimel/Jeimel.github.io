@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 yew = { git = "https://github.com/yewstack/yew/", features = ["csr"] }
+yew-router = { git = "https://github.com/yewstack/yew.git" }
 web-sys = "0.3.68"
 image = "0.24.8"
 base64 = "0.21.7"
