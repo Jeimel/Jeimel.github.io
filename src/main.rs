@@ -3,7 +3,7 @@ mod pages;
 mod perlin;
 
 use yew::{classes, function_component, html, Html};
-use yew_router::prelude::*;
+use yew_router::prelude::{HashRouter, Routable, Switch};
 
 use components::Header;
 use pages::{home::Home, infinite::Infinite};
@@ -38,12 +38,12 @@ fn switch(routes: Route) -> Html {
 #[function_component]
 fn App() -> Html {
     html! {
-        <BrowserRouter>
+        <HashRouter>
             <Switch<Route> render={switch} />
             <footer class={classes!("section")}>
                 <Header text={"jeimel."} />
             </footer>
-        </BrowserRouter>
+        </HashRouter>
     }
 }
 
