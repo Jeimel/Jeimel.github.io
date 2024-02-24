@@ -1,9 +1,7 @@
 use web_sys::window;
 use yew::{classes, html, Component, Context, Html};
 
-use crate::components::{Button, Header, Project};
-use crate::perlin::Noise;
-
+use crate::components::{perlin::Terrain, project::Project, ui::Button, ui::Header};
 pub struct Home;
 
 impl Component for Home {
@@ -37,21 +35,18 @@ impl Component for Home {
             };
         }
 
-        let perlin_base64 =
-            Noise::generate(width * scale, height * scale, 40f32, 4u32, 0.5f32, 2f32);
-
         html! {
             <main>
-                <section id="front" class={classes!("section", "front-background")} style={format!("background-image: url(data:image/jpeg;base64,{})", perlin_base64)}>
+                <Terrain width={width * scale} height={height * scale}>
                     <Header text={"hi, i'm felix."} />
                     <div class={classes!("front-container")}>
                         <Button title={"github"} link={"https://github.com/jeimel"} />
                         <Button title={"projects"} link={"#projects"} new_tab={false} />
                     </div>
-                </section>
+                </Terrain>
                 <section id="projects" class={classes!("section")}>
                     <Header text={"projects."} />
-                    <div class={classes!("")}>
+                    <div>
                         <Project title={"jeimel.github.io"} link={"https://github.com/Jeimel/jeimel.github.io"} description={"Access the source code for this website, inclusive of a Perlin Noise implementation employed for procedural background image generation. All future subpages will be included in the repository."} />
                         <Project title={"infinite-craft"} link={"https://github.com/Jeimel/infinite-craft"} description={"Currently a Python command line tool to fetch all the recipes and elements from Neal's infinte-craft."} />
                     </div>

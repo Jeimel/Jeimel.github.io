@@ -1,11 +1,10 @@
 mod components;
 mod pages;
-mod perlin;
 
 use yew::{classes, function_component, html, Html};
 use yew_router::prelude::{HashRouter, Routable, Switch};
 
-use components::Header;
+use components::ui::Header;
 use pages::{home::Home, infinite::Infinite};
 
 #[derive(Clone, Routable, PartialEq)]

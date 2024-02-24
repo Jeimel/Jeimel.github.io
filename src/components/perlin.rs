@@ -3,10 +3,55 @@ use image::{Rgb, RgbImage};
 use rand::{seq::SliceRandom, thread_rng};
 use std::io::Cursor;
 
-pub struct Noise;
+use yew::{classes, html, Component, Context, Html, Properties};
 
-impl Noise {
-    pub fn generate(
+#[derive(Properties, PartialEq)]
+pub struct TerrainProperties {
+    #[prop_or_default]
+    pub children: Html,
+    pub width: u32,
+    pub height: u32,
+    #[prop_or(40f32)]
+    pub scale: f32,
+    #[prop_or(4u32)]
+    pub octaves: u32,
+    #[prop_or(0.5f32)]
+    pub persistance: f32,
+    #[prop_or(2f32)]
+    pub lacunarity: f32,
+}
+
+pub struct Terrain;
+
+impl Component for Terrain {
+    type Message = ();
+
+    type Properties = TerrainProperties;
+
+    fn create(_: &Context<Self>) -> Self {
+        Self
+    }
+
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let perlin_base64 = Terrain::generate(
+            ctx.props().width,
+            ctx.props().height,
+            ctx.props().scale,
+            ctx.props().octaves,
+            ctx.props().persistance,
+            ctx.props().lacunarity,
+        );
+
+        html! {
+            <section class={classes!("section", "front-background")} style={format!("background-image: url(data:image/jpeg;base64,{})", perlin_base64)}>
+                {ctx.props().children.clone()}
+            </section>
+        }
+    }
+}
+
+impl Terrain {
+    fn generate(
         width: u32,
         height: u32,
         scale: f32,
@@ -55,7 +100,7 @@ impl Noise {
                 img.put_pixel(
                     x,
                     y,
-                    Noise::terrain_color(Utility::clamp01(
+                    Terrain::pixel_color(Utility::clamp01(
                         noise[(y * width + x) as usize] - falloff_map[(y * width + x) as usize],
                     )),
                 )
@@ -69,7 +114,7 @@ impl Noise {
         general_purpose::STANDARD.encode(buffer)
     }
 
-    fn terrain_color(noise: f32) -> Rgb<u8> {
+    fn pixel_color(noise: f32) -> Rgb<u8> {
         match noise {
             _ if noise < 0.28 => Rgb([52, 14, 156]),  // Water1
             _ if noise < 0.42 => Rgb([82, 40, 199]),  // Water2
