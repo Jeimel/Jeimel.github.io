@@ -13,13 +13,6 @@ pub struct ButtonProperties {
     pub new_tab: bool,
 }
 
-#[derive(Properties, PartialEq)]
-pub struct ProjectProperties {
-    pub title: String,
-    pub link: String,
-    pub description: String,
-}
-
 #[function_component]
 pub fn Header(props: &HeaderProperties) -> Html {
     html! {
@@ -39,17 +32,5 @@ pub fn Button(props: &ButtonProperties) -> Html {
                 <a href={props.link.clone()}>{props.title.clone()}</a>
             }
         </span>
-    }
-}
-
-#[function_component]
-pub fn Project(props: &ProjectProperties) -> Html {
-    html! {
-        <div class={classes!("project")}>
-            <Button title={props.title.clone()} link={props.link.clone()}/>
-            <span class={classes!("project-text")}>
-                {props.description.clone()}
-            </span>
-        </div>
     }
 }

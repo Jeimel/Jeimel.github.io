@@ -1,19 +1,16 @@
 mod components;
 mod pages;
-mod perlin;
 
 use yew::{classes, function_component, html, Html};
 use yew_router::prelude::{HashRouter, Routable, Switch};
 
-use components::Header;
-use pages::{home::Home, infinite::Infinite};
+use components::ui::Header;
+use pages::home::Home;
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
     #[at("/")]
     Home,
-    #[at("/infinite")]
-    Infinite,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -21,9 +18,6 @@ enum Route {
 
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Infinite => {
-            html! { <Infinite /> }
-        }
         Route::Home => {
             html! { <Home /> }
         }
