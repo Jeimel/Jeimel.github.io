@@ -27,6 +27,7 @@ body {
 .header {
   margin: 10px 0;
   text-wrap: nowrap;
+  text-align: center;
   font-size: 6rem;
   color: white;
 }
@@ -41,13 +42,13 @@ body {
 .front-background {
   height: 100dvh;
   background-position: center;
-  background-size: 140%;
   background-repeat: no-repeat;
 }
 
-.front-container {
+.button-container {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .project {
