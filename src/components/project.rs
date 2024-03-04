@@ -13,7 +13,7 @@ pub struct ProjectProperties {
 pub fn Project(props: &ProjectProperties) -> Html {
     html! {
         <div class={classes!("project")}>
-            <Button title={props.title.clone()} link={props.link.clone()}/>
+            <Button title={props.title.clone()} link={props.link.clone()} />
             <span class={classes!("project-text")}>
                 {props.description.clone()}
             </span>
