@@ -3,9 +3,35 @@ use yew::{classes, html, Component, Context, Html};
 
 use crate::components::{perlin::Terrain, project::Project, ui::Button, ui::Header};
 
-// TODO: WTF?
-const BACKGROUND_WIDTH: [u32; 3] = [16 * 40, 9 * 30, 12 * 35];
-const BACKGROUND_HEIGHT: [u32; 3] = [9 * 40, 20 * 30, 12 * 35];
+trait Background {
+    fn width(&self) -> u32;
+
+    fn height(&self) -> u32;
+}
+
+struct Mobile;
+
+impl Background for Mobile {
+    fn width(&self) -> u32 {
+        9 * 30
+    }
+
+    fn height(&self) -> u32 {
+        20 * 30
+    }
+}
+
+struct Desktop;
+
+impl Background for Desktop {
+    fn width(&self) -> u32 {
+        16 * 40
+    }
+
+    fn height(&self) -> u32 {
+        9 * 40
+    }
+}
 
 pub struct Home;
 
@@ -19,7 +45,7 @@ impl Component for Home {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        let (mut index, mut window_width, mut window_height, mut mobile) = (0, 1920, 1080, false);
+        let (mut window_width, mut window_height, mut mobile) = (1920, 1080, false);
 
         if let Some(window) = window() {
             window_width = window
@@ -33,22 +59,22 @@ impl Component for Home {
                 .as_f64()
                 .unwrap_or(0f64) as u32;
 
-            index = if window_width < 700 {
-                1
-            } else if window_width < 1120 {
-                2
-            } else {
-                index
-            };
-
             mobile = window_width < 1120;
         }
+
+        let background: Box<dyn Background> = if window_width < 700 {
+            Box::new(Mobile {})
+        } else if window_width < 1120 {
+            Box::new(Desktop {})
+        } else {
+            Box::new(Desktop {})
+        };
 
         html! {
             <main>
                 <Terrain
-                    width={BACKGROUND_WIDTH[index]}
-                    height={BACKGROUND_HEIGHT[index]}
+                    width={background.width()}
+                    height={background.height()}
                     window_width={window_width}
                     window_height={window_height}
                     mobile={mobile}
@@ -68,10 +94,16 @@ impl Component for Home {
                             title={"jeimel.github.io"}
                             link={"https://github.com/Jeimel/jeimel.github.io"}
                             description={
-                                "Access the source code for this website, inclusive
-                                of a Perlin Noise implementation employed for procedural 
-                                background image generation. All future subpages will be 
-                                included in the repository."
+                                ""
+                            }
+                        />
+                    </div>
+                    <div>
+                        <Project
+                            title={"Battleship"}
+                            link={"https://github.com/Jeimel/Battleship"}
+                            description={
+                                ""
                             }
                         />
                     </div>
