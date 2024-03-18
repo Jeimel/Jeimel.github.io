@@ -8,13 +8,13 @@ use std::{
 
 use yew::{classes, html, Component, Context, Html, Properties};
 
+// TODO: less properties
 #[derive(Properties, PartialEq)]
 pub struct TerrainProperties {
     #[prop_or_default]
     pub children: Html,
     pub width: u32,
     pub height: u32,
-    pub front_ratio: f32,
     pub window_width: u32,
     pub window_height: u32,
     #[prop_or(false)]
@@ -43,48 +43,21 @@ impl Component for Terrain {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let props = ctx.props();
 
-        let mut noise = vec![0f32; (props.width * props.height) as usize];
-
-        let generate = |width, height, front_ratio| {
-            Terrain::generate(
-                width,
-                height,
-                front_ratio,
-                props.scale,
-                props.octaves,
-                props.persistance,
-                props.lacunarity,
-            )
-        };
-
-        noise = if props.mobile {
-            let front_size = (props.height as f32 * props.front_ratio) as u32;
-            let part_size = (props.height - front_size + 1) / 2;
-
-            let noise_top = generate(props.width, part_size, 0f32);
-            let noise_bottom = generate(props.width, part_size, 0f32);
-
-            noise
-                .iter_mut()
-                .enumerate()
-                .map(|(i, value)| {
-                    let x = i as u32 % props.width;
-                    let y = i as u32 / props.width;
-
-                    if y < part_size {
-                        return noise_top[i];
-                    }
-                    if y >= part_size + front_size {
-                        return noise_bottom
-                            [((y - part_size - front_size) * props.width + x) as usize];
-                    }
-
-                    *value
-                })
-                .collect()
+        let heuristic = if props.mobile {
+            |_, y| 1f32 - Utility::abs32(y) - 0.125
         } else {
-            generate(props.width, props.height, props.front_ratio)
+            |x, y| 1f32 - Utility::abs32(x).max(Utility::abs32(y))
         };
+
+        let noise = Terrain::generate(
+            props.width,
+            props.height,
+            props.scale,
+            heuristic,
+            props.octaves,
+            props.persistance,
+            props.lacunarity,
+        );
 
         let mut img = RgbImage::new(props.width, props.height);
         for y in 0..props.height {
@@ -120,16 +93,16 @@ impl Component for Terrain {
 }
 
 impl Terrain {
-    fn generate(
+    fn generate<F: Fn(f32, f32) -> f32>(
         width: u32,
         height: u32,
-        front_ratio: f32,
         scale: f32,
+        heuristic: F,
         octaves: u32,
         persistance: f32,
         lacunarity: f32,
     ) -> Vec<f32> {
-        let fall_off_map = FallOffMap::new(width, height, front_ratio);
+        let fall_off_map = FallOffMap::new(width, height, heuristic);
 
         let mut noise = vec![0f32; (width * height) as usize];
 
@@ -252,23 +225,34 @@ impl PerlinNoise {
     }
 }
 
-struct FallOffMap {
+struct FallOffMap<F>
+where
+    F: Fn(f32, f32) -> f32,
+{
     map: Vec<f32>,
+    heuristic: F,
+    a: f32,
+    b: f32,
 }
 
-impl FallOffMap {
-    const A: f32 = 5f32;
-    const B: f32 = 8f32;
+impl<F> FallOffMap<F>
+where
+    F: Fn(f32, f32) -> f32,
+{
+    pub fn new(width: u32, height: u32, heuristic: F) -> Self {
+        let mut map = FallOffMap {
+            map: vec![0f32; (width * height) as usize],
+            heuristic,
+            a: 3.0,
+            b: 1.5,
+        };
 
-    pub fn new(width: u32, height: u32, threshold: f32) -> Self {
-        let map = FallOffMap::generate(width, height, threshold);
+        map.generate(width, height);
 
-        FallOffMap { map }
+        map
     }
 
-    fn generate(width: u32, height: u32, threshold: f32) -> Vec<f32> {
-        let mut map = vec![0f32; (width * height) as usize];
-
+    fn generate(&mut self, width: u32, height: u32) {
         for y in 0..height {
             for x in 0..width {
                 let (value_x, value_y) = (
@@ -276,38 +260,34 @@ impl FallOffMap {
                     y as f32 / height as f32 * 2f32 - 1f32,
                 );
 
-                let value = Utility::abs32(value_x).max(Utility::abs32(value_y));
-                map[(y * width + x) as usize] = FallOffMap::evaluate(value, threshold);
+                let value = (self.heuristic)(value_x, value_y);
+                self.map[(y * width + x) as usize] = self.evaluate(value);
             }
         }
-
-        map
     }
 
-    fn evaluate(value: f32, threshold: f32) -> f32 {
-        if value < threshold {
-            return -FallOffMap::func(value + (1f32 - threshold)) + 1f32;
-        }
-        FallOffMap::func(value)
-    }
-
-    fn func(value: f32) -> f32 {
-        value.powf(FallOffMap::A)
-            / (value.powf(FallOffMap::A)
-                + (FallOffMap::B - FallOffMap::B * value).powf(FallOffMap::A))
+    fn evaluate(&self, value: f32) -> f32 {
+        value.powf(self.a) / (value.powf(self.a) + (self.b - self.b * value).powf(self.a))
     }
 }
 
-impl Index<usize> for FallOffMap {
+impl<F> Index<usize> for FallOffMap<F>
+where
+    F: Fn(f32, f32) -> f32,
+{
     type Output = f32;
-    fn index<'a>(&'a self, i: usize) -> &'a f32 {
-        &self.map[i]
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.map[index]
     }
 }
 
-impl IndexMut<usize> for FallOffMap {
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
-        &mut self.map[i]
+impl<F> IndexMut<usize> for FallOffMap<F>
+where
+    F: Fn(f32, f32) -> f32,
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.map[index]
     }
 }
 
