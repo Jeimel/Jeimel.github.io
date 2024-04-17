@@ -21,6 +21,18 @@ impl Background for Mobile {
     }
 }
 
+struct Tablet;
+
+impl Background for Tablet {
+    fn width(&self) -> u32 {
+        16 * 40
+    }
+
+    fn height(&self) -> u32 {
+        9 * 40
+    }
+}
+
 struct Desktop;
 
 impl Background for Desktop {
@@ -65,7 +77,7 @@ impl Component for Home {
         let background: Box<dyn Background> = if window_width < 700 {
             Box::new(Mobile {})
         } else if window_width < 1120 {
-            Box::new(Desktop {})
+            Box::new(Tablet {})
         } else {
             Box::new(Desktop {})
         };
@@ -91,8 +103,8 @@ impl Component for Home {
                     <Header text={"projects."} />
                     <div>
                         <Project
-                            title={"jeimel.github.io"}
-                            link={"https://github.com/Jeimel/jeimel.github.io"}
+                            title={"Infomate"}
+                            link={"https://github.com/Jeimel/Infomate"}
                             description={
                                 ""
                             }

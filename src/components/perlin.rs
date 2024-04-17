@@ -8,7 +8,6 @@ use std::{
 
 use yew::{classes, html, Component, Context, Html, Properties};
 
-// TODO: less properties
 #[derive(Properties, PartialEq)]
 pub struct TerrainProperties {
     #[prop_or_default]
@@ -46,7 +45,7 @@ impl Component for Terrain {
         let heuristic = if props.mobile {
             |_, y| 1f32 - Utility::abs32(y) - 0.125
         } else {
-            |x, y| 1f32 - Utility::abs32(x).max(Utility::abs32(y))
+            |x, y| 1f32 - Utility::abs32(x).max(Utility::abs32(y)) + 0.0675
         };
 
         let noise = Terrain::generate(
@@ -144,14 +143,14 @@ impl Terrain {
 
     fn pixel_color(noise: f32) -> Rgb<u8> {
         match noise {
-            _ if noise < 0.18 => Rgb([52, 14, 156]),  // Water1
-            _ if noise < 0.42 => Rgb([82, 40, 199]),  // Water2
-            _ if noise < 0.5 => Rgb([196, 172, 63]),  // Beach
-            _ if noise < 0.6 => Rgb([49, 215, 4]),    // Grass1
-            _ if noise < 0.72 => Rgb([42, 133, 21]),  // Grass2
-            _ if noise < 0.8 => Rgb([69, 44, 44]),    // Mountain1
-            _ if noise < 0.9 => Rgb([45, 31, 31]),    // Mountain2
-            _ if noise < 1.0 => Rgb([154, 168, 153]), // snow
+            _ if noise < 0.18 => Rgb([12, 45, 107]),  // Water1
+            _ if noise < 0.42 => Rgb([13, 65, 157]),  // Water2
+            _ if noise < 0.5 => Rgb([242, 204, 96]),  // Beach
+            _ if noise < 0.6 => Rgb([35, 134, 54]),   // Grass1
+            _ if noise < 0.72 => Rgb([15, 83, 35]),   // Grass2
+            _ if noise < 0.8 => Rgb([110, 118, 129]), // Mountain1
+            _ if noise < 0.9 => Rgb([48, 54, 61]),    // Mountain2
+            _ if noise < 1.0 => Rgb([255, 255, 255]), // snow
             _ => Rgb([0, 0, 0]),
         }
     }
